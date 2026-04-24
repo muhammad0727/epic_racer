@@ -14,7 +14,16 @@ module epic_racer (
     output wire [3:0] r,
     output wire [3:0] g,
     output wire [3:0] b
+    // input wire btn_gear_up,
+    // input wire btn_gear_down,
+    // input wire enc_a,
+    // input wire enc_b,
+    // input wire pot_gear_in
 );
+
+// wire gear_up, gear_down;
+// wire [3:0] current_gear;
+// ... gear logic ...
 
 wire clk65M;
 
@@ -407,15 +416,15 @@ lap_timer my_lap_timer(
     .best_lap_time(best_lap_time)
 );
 
-wire [10:0] current_lap_time_char_addr;
-wire [7:0] current_lap_time_char_pixels;
-wire [15:0] current_lap_time_char_xy;
+wire [10:0] time_remaining_char_addr;
+wire [7:0] time_remaining_char_pixels;
+wire [15:0] time_remaining_char_xy;
 
 wire [10:0] vcount_rcrl, hcount_rcrl;           
 wire vsync_rcrl, vblnk_rcrl, hsync_rcrl, hblnk_rcrl;
 wire [11:0] rgb_rcrl;
 
-draw_rect_char #(144, 32, 23, 1, 12'h333) draw_current_lap_time (
+draw_rect_char #(144, 32, 21, 1, 12'hfff) draw_time_remaining (
     .hcount_in(hcount_crrc),
     .hsync_in(hsync_crrc),
     .hblnk_in(hblnk_crrc),
@@ -423,7 +432,7 @@ draw_rect_char #(144, 32, 23, 1, 12'h333) draw_current_lap_time (
     .vsync_in(vsync_crrc),
     .vblnk_in(vblnk_crrc),
     .rgb_in(rgb_crrc),
-    .char_pixels(current_lap_time_char_pixels),
+    .char_pixels(time_remaining_char_pixels),
     .pclk(clk65M),
     .rst(rst),
     .visible(game_visible),
@@ -434,31 +443,31 @@ draw_rect_char #(144, 32, 23, 1, 12'h333) draw_current_lap_time (
     .vsync_out(vsync_rcrl),
     .vblnk_out(vblnk_rcrl),
     .rgb_out(rgb_rcrl),
-    .char_xy(current_lap_time_char_xy),
-    .char_line(current_lap_time_char_addr[3:0])
+    .char_xy(time_remaining_char_xy),
+    .char_line(time_remaining_char_addr[3:0])
 );
 
-current_lap_time_char_rom current_lap_time_char_rom(
-    .char_xy(current_lap_time_char_xy),
+time_remaining_char_rom time_remaining_char_rom(
+    .char_xy(time_remaining_char_xy),
     .current_lap_time(current_lap_time),
-    .char_code(current_lap_time_char_addr[10:4])
+    .char_code(time_remaining_char_addr[10:4])
 );
 
-font_rom current_lap_time_font_rom (
+font_rom time_remaining_font_rom (
     .clk(clk65M),
-    .addr(current_lap_time_char_addr),
-    .char_line_pixels(current_lap_time_char_pixels)
+    .addr(time_remaining_char_addr),
+    .char_line_pixels(time_remaining_char_pixels)
 );
 
-wire [10:0] last_lap_time_char_addr;
-wire [7:0] last_lap_time_char_pixels;
-wire [15:0] last_lap_time_char_xy;
+wire [10:0] gear_char_addr;
+wire [7:0] gear_char_pixels;
+wire [15:0] gear_char_xy;
 
-wire [10:0] vcount_rlrb, hcount_rlrb;
-wire vsync_rlrb, vblnk_rlrb, hsync_rlrb, hblnk_rlrb;
-wire [11:0] rgb_rlrb;
+wire [10:0] vcount_rbrs, hcount_rbrs;
+wire vsync_rbrs, vblnk_rbrs, hsync_rbrs, hblnk_rbrs;
+wire [11:0] rgb_rbrs;
 
-draw_rect_char #(416, 32, 20, 1, 12'h333) draw_last_lap_time (
+draw_rect_char #(664, 32, 7, 1, 12'hfff) draw_gear (
     .hcount_in(hcount_rcrl),
     .vcount_in(vcount_rcrl),
     .hsync_in(hsync_rcrl),
@@ -466,50 +475,7 @@ draw_rect_char #(416, 32, 20, 1, 12'h333) draw_last_lap_time (
     .vsync_in(vsync_rcrl),
     .vblnk_in(vblnk_rcrl),
     .rgb_in(rgb_rcrl),
-    .char_pixels(last_lap_time_char_pixels),
-    .pclk(clk65M),
-    .rst(rst),
-    .visible(game_visible),
-    .hcount_out(hcount_rlrb),
-    .vcount_out(vcount_rlrb),
-    .hsync_out(hsync_rlrb),
-    .vsync_out(vsync_rlrb),
-    .hblnk_out(hblnk_rlrb),
-    .vblnk_out(vblnk_rlrb),
-    .rgb_out(rgb_rlrb),
-    .char_xy(last_lap_time_char_xy),
-    .char_line(last_lap_time_char_addr[3:0])
-);
-
-last_lap_time_char_rom last_lap_time_char_rom(
-    .char_xy(last_lap_time_char_xy),
-    .last_lap_time(last_lap_time),
-    .char_code(last_lap_time_char_addr[10:4])
-);
-
-font_rom last_lap_time_font_rom (
-    .clk(clk65M),
-    .addr(last_lap_time_char_addr),
-    .char_line_pixels(last_lap_time_char_pixels)
-);
-
-wire [10:0] best_lap_time_char_addr;
-wire [7:0] best_lap_time_char_pixels;
-wire [15:0] best_lap_time_char_xy;
-
-wire [10:0] vcount_rbrs, hcount_rbrs;
-wire vsync_rbrs, vblnk_rbrs, hsync_rbrs, hblnk_rbrs;
-wire [11:0] rgb_rbrs;
-
-draw_rect_char #(664, 32, 20, 1, 12'h333) draw_best_lap_time (
-    .hcount_in(hcount_rlrb),
-    .vcount_in(vcount_rlrb),
-    .hsync_in(hsync_rlrb),
-    .hblnk_in(hblnk_rlrb),
-    .vsync_in(vsync_rlrb),
-    .vblnk_in(vblnk_rlrb),
-    .rgb_in(rgb_rlrb),
-    .char_pixels(best_lap_time_char_pixels),
+    .char_pixels(gear_char_pixels),
     .pclk(clk65M),
     .rst(rst),
     .visible(game_visible),
@@ -520,20 +486,23 @@ draw_rect_char #(664, 32, 20, 1, 12'h333) draw_best_lap_time (
     .hblnk_out(hblnk_rbrs),
     .vblnk_out(vblnk_rbrs),
     .rgb_out(rgb_rbrs),
-    .char_xy(best_lap_time_char_xy),
-    .char_line(best_lap_time_char_addr[3:0])
+    .char_xy(gear_char_xy),
+    .char_line(gear_char_addr[3:0])
 );
 
-best_lap_time_char_rom best_lap_time_char_rom(
-    .char_xy(best_lap_time_char_xy),
-    .best_lap_time(best_lap_time),
-    .char_code(best_lap_time_char_addr[10:4])
+wire [3:0] current_gear_val;
+assign current_gear_val = 4'd1; // placeholder for now
+
+gear_char_rom gear_char_rom(
+    .char_xy(gear_char_xy),
+    .current_gear(current_gear_val),
+    .char_code(gear_char_addr[10:4])
 );
 
-font_rom best_lap_time_font_rom (
+font_rom gear_font_rom (
     .clk(clk65M),
-    .addr(best_lap_time_char_addr),
-    .char_line_pixels(best_lap_time_char_pixels)
+    .addr(gear_char_addr),
+    .char_line_pixels(gear_char_pixels)
 );
 
 wire [10:0] too_slow_char_addr;
