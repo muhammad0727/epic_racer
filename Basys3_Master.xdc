@@ -149,7 +149,15 @@ set_property PACKAGE_PIN U17 [get_ports btnD]
 #set_property PACKAGE_PIN G3 [get_ports {JA[7]}]					
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[7]}]
 
-
+## Commented out pins for future hardware
+## set_property PACKAGE_PIN J1 [get_ports btn_gear_up]
+## set_property IOSTANDARD LVCMOS33 [get_ports btn_gear_up]
+## set_property PACKAGE_PIN L2 [get_ports btn_gear_down]
+## set_property IOSTANDARD LVCMOS33 [get_ports btn_gear_down]
+## set_property PACKAGE_PIN J2 [get_ports enc_a]
+## set_property IOSTANDARD LVCMOS33 [get_ports enc_a]
+## set_property PACKAGE_PIN G2 [get_ports enc_b]
+## set_property IOSTANDARD LVCMOS33 [get_ports enc_b]
 
 ##Pmod Header JB
 ##Sch name = JB1
@@ -231,6 +239,10 @@ set_property PACKAGE_PIN U17 [get_ports btnD]
 ##Sch name = XA4_N
 #set_property PACKAGE_PIN N1 [get_ports {JXADC[7]}]				
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[7]}]
+
+## Commented out analog pot pin for future hardware
+## set_property PACKAGE_PIN J3 [get_ports pot_gear_in]
+## set_property IOSTANDARD LVCMOS33 [get_ports pot_gear_in]
 
 
 
